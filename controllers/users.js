@@ -22,7 +22,7 @@ module.exports.getUser = (req, res) => {
       res.send(user);
     })
     .catch((err) => {
-      console.error(err);
+      console.log(err);
       res.status(500).send({ message: 'Ошибка на сервере' });
     });
 };
