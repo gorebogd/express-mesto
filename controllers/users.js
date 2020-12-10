@@ -7,7 +7,7 @@ module.exports.getUsers = (req, res) => {
   readFile(pathToUsers)
     .then((data) => res.send(data))
     .catch(() => {
-      res.status(404).send({ message: 'Запрашиваемый ресурс не найден' });
+      res.status(500).send({ message: 'Ошибка на сервере' });
     });
 };
 
@@ -18,11 +18,11 @@ module.exports.getUser = (req, res) => {
       const user = data.find((item) => item._id === id);
       if (!user) {
         res.status(404).send({ message: 'Нет пользователя с таким id' });
+        return;
       }
       res.send(user);
     })
-    .catch((err) => {
-      console.log(err);
+    .catch(() => {
       res.status(500).send({ message: 'Ошибка на сервере' });
     });
 };
