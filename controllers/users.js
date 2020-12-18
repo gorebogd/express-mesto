@@ -1,27 +1,33 @@
-const path = require('path');
-const readFile = require('../utils/read-file');
+const User = require('../models/user');
 
-const pathToUsers = path.join(__dirname, '..', 'data', 'users.json');
-
-module.exports.getUsers = (req, res) => {
-  readFile(pathToUsers)
+function getUsers(req, res) {
+  User.find()
     .then((data) => res.send(data))
     .catch(() => {
       res.status(500).send({ message: 'Ошибка на сервере' });
     });
-};
+}
 
-module.exports.getUser = (req, res) => {
-  const { id } = req.params;
-  readFile(pathToUsers)
-    .then((data) => {
-      const user = data.find((item) => item._id === id);
-      if (!user) {
-        return res.status(404).send({ message: 'Нет пользователя с таким id' });
-      }
-      res.send(user);
-    })
+function getUser(req, res) {
+  const { userId } = req.params;
+  User.findById(userId)
+    .onFail(new Error('notValidId'))
+    .then((user) => res.send(user))
     .catch(() => {
       res.status(500).send({ message: 'Ошибка на сервере' });
     });
+}
+
+function createUser(req, res) {
+  User.create(req.body)
+    .then((user) => res.status(200).send(user))
+    .catch(() => {
+      res.status(500).send({ message: 'Ошибка на сервере' });
+    });
+}
+
+module.exports = {
+  getUsers,
+  getUser,
+  createUser,
 };
