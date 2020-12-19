@@ -19,6 +19,7 @@ const userSchema = new mongoose.Schema({
     required: true,
     validate: {
       validator: (v) => regex.test(v),
+      message: 'Невалидная ссылка',
     },
   },
 });

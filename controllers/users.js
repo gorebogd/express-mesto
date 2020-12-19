@@ -11,18 +11,27 @@ function getUsers(req, res) {
 function getUser(req, res) {
   const { userId } = req.params;
   User.findById(userId)
-    .onFail(new Error('notValidId'))
+    .orFail(new Error('notExistId'))
     .then((user) => res.send(user))
-    .catch(() => {
-      res.status(500).send({ message: 'Ошибка на сервере' });
+    .catch((err) => {
+      if (err.message === 'notExistId') {
+        res.status(404).send({ message: 'Нет пользователья с таким id' });
+      } else if (err.name === 'CastError') {
+        res.status(400).send({ message: 'Неверный id' });
+      } else {
+        res.status(500).send({ message: 'Ошибка на сервере' });
+      }
     });
 }
 
 function createUser(req, res) {
   User.create(req.body)
-    .then((user) => res.status(200).send(user))
-    .catch(() => {
-      res.status(500).send({ message: 'Ошибка на сервере' });
+    .then((user) => res.send(user))
+    .catch((err) => {
+      if (err.name === 'Validation Error') {
+        return res.status(400).send({ message: 'Данные невалидны' });
+      }
+      return res.status(500).send({ message: 'Ошибка на сервере' });
     });
 }
 
