@@ -9,8 +9,8 @@ function getUsers(req, res) {
 }
 
 function getUser(req, res) {
-  const { userId } = req.params;
-  User.findById(userId)
+  const { id } = req.params;
+  User.findById(id)
     .orFail(new Error('notExistId'))
     .then((user) => res.send(user))
     .catch((err) => {
