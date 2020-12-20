@@ -15,7 +15,7 @@ function getUser(req, res) {
     .then((user) => res.send(user))
     .catch((err) => {
       if (err.message === 'notExistId') {
-        res.status(404).send({ message: 'Нет пользователья с таким id' });
+        res.status(404).send({ message: 'Нет пользователя с таким id' });
       } else if (err.name === 'CastError') {
         res.status(400).send({ message: 'Неверный id' });
       } else {
@@ -28,7 +28,7 @@ function createUser(req, res) {
   User.create(req.body)
     .then((user) => res.send(user))
     .catch((err) => {
-      if (err.name === 'Validation Error') {
+      if (err.name === 'ValidationError') {
         return res.status(400).send({ message: 'Данные невалидны' });
       }
       return res.status(500).send({ message: 'Ошибка на сервере' });
